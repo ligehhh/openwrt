@@ -19,6 +19,10 @@ on:
         description: 'SSH connection to Actions'
         required: false
         default: 'false'
+      cache:
+        description: 'Cache wrt build'
+        required: false
+        default: 'true
 
 env:
   REPO_URL: https://github.com/coolsnowwolf/lede
