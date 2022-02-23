@@ -131,6 +131,24 @@ jobs:
         echo "UPLOAD_PATH=$PWD" >> $GITHUB_ENV
         echo "::set-output name=status::success"
         
+    - name: Compressed kernel packages
+      uses: thedoctor0/zip-release@master
+      if: steps.environment.outputs.status == 'success' && steps.compile.outputs.status == 'success' && !cancelled()
+      with:
+        type: tar
+        path: packages/
+        directory: ${{ env.UPLOAD_PATH }}/
+        filename: ${{ env.UPLOAD_PATH }}/OpenWrt_firmware_kernel_packages${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}.tar.gz
+        
+    - name: Compressed firmware packages
+      uses: thedoctor0/zip-release@master
+      if: steps.environment.outputs.status == 'success' && steps.compile.outputs.status == 'success' && !cancelled()
+      with:
+        type: tar
+        path: packages/
+        directory: ${{ env.WORKSPACE_DIR }}/
+        filename: ${{ env.UPLOAD_PATH }}/OpenWrt_firmware_packages${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}.tar.gz
+        
     - name: Organize files
       id: organize
       if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
