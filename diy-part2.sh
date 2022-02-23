@@ -19,7 +19,7 @@ sed -i 's/OpenWrt/Nianwrt/g' package/base-files/files/bin/config_generate #修�
 sed -i '5a\msgid "Compiler author"' feeds/luci/modules/luci-base/po/zh-cn/base.po #添加汉化
 sed -i '6a\msgstr "编译作者"' feeds/luci/modules/luci-base/po/zh-cn/base.po #添加汉化
 sed -i '7a \\' feeds/luci/modules/luci-base/po/zh-cn/base.po #添加汉化
-sed -i '/<tr><td width="33%"><%:Compiler author/a <tr><td width="33%"><%:Firmware Update%></td><td><a target="_blank" href="点这里">https://github.com/ligehhh/openwrt/releases</a></td></tr>' package/lean/autocore/files/x86/index.htm #添加固件更新地址
+sed -i '/<tr><td width="33%"><%:Compiler author/a <tr><td width="33%"><%:Firmware Update%></td><td><a target="_blank" href="https://github.com/ligehhh/openwrt/releases">点这里</a></td></tr>' package/lean/autocore/files/x86/index.htm #添加固件更新地址
 sed -i '8a\msgid "Firmware Update"' feeds/luci/modules/luci-base/po/zh-cn/base.po #添加汉化
 sed -i '9a\msgstr "固件更新"' feeds/luci/modules/luci-base/po/zh-cn/base.po #添加汉化
 sed -i '10a \\' feeds/luci/modules/luci-base/po/zh-cn/base.po #添加汉化
