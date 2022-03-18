@@ -14,7 +14,7 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-n
 sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-ssl-nginx/Makefile   # 选择argon为默认主题
 rm -rf  feeds/luci/themes/luci-theme-argon   # 删除自带argon
 git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon   # 替换新版argon
-sed -i '/<tr><td width="33%"><%:CPU usage/a <tr><td width="33%"><%:Compiler author%></td><td>QQ 912466913</td></tr>' package/lean/autocore/files/x86/index.htm #添加编译作者
+sed -i '/<tr><td width="33%"><%:CPU usage/a <tr><td width="33%"><%:Compiler author%></td><td>Nian Nian</td></tr>' package/lean/autocore/files/x86/index.htm #添加编译作者
 sed -i 's/OpenWrt/Nianwrt/g' package/base-files/files/bin/config_generate #修改主机名
 sed -i '5a\msgid "Compiler author"' feeds/luci/modules/luci-base/po/zh-cn/base.po #添加汉化
 sed -i '6a\msgstr "编译作者"' feeds/luci/modules/luci-base/po/zh-cn/base.po #添加汉化
