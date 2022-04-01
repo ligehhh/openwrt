@@ -193,11 +193,12 @@ jobs:
         echo "::set-output name=status::success"
         
     - name: Upload firmware to release
-        if: steps.organizer.outputs.status == 'success' && env.RELEASE == 'true' && !cancelled()
-        uses: softprops/action-gh-release@v1
-        env:
+      if: steps.organizer.outputs.status == 'success' && env.RELEASE == 'true' && !cancelled()
+      uses: softprops/action-gh-release@v1
+      env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-        with:
+      with:
+
           name: ${{ env.RELEASE_NAME }}  ❤️ | ${{ matrix.target }}-OpenWrt 自动编译
           tag_name: ${{ env.RELEASE_TAG }}
           body: |
