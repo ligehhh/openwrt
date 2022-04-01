@@ -193,14 +193,20 @@ jobs:
         echo "::set-output name=status::success"
         
     - name: Upload firmware to release
-      uses: softprops/action-gh-release@v1
-      if: steps.tag.outputs.status == 'success' && !cancelled()
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
-      with:
-        tag_name: ${{ steps.tag.outputs.release_tag }}
-        body_path: release.txt
-        files: ${{ env.FIRMWARE }}/*
+        if: steps.organizer.outputs.status == 'success' && env.RELEASE == 'true' && !cancelled()
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        with:
+          name: ${{ env.RELEASE_NAME }}  ❤️ | ${{ matrix.target }}-OpenWrt 自动编译
+          tag_name: ${{ env.RELEASE_TAG }}
+          body: |
+            ☆ 源码来源: ${{ env.REPO_URL }}
+            ☆ 源码分支: ${{ env.REPO_BRANCH }}
+            
+            ✨ 当前源码版本:
+            ${{ env.useVersionInfo }}
+          files: ${{ github.workspace }}/dist/*
 
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
