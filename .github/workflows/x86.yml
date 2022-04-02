@@ -114,50 +114,6 @@ jobs:
     - name: Check space usage
       if: (!cancelled())
       run: df -hT
-
-    - name: Upload bin directory
-      uses: actions/upload-artifact@main
-      if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
-      with:
-        name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
-        path: openwrt/bin
-        
-    - name: Get environment path
-      id: environment
-      if: env.UPLOAD_BIN_DIR == 'true' && !cancelled()
-      run: |
-        cd openwrt/bin/
-        echo "WORKSPACE_DIR=$PWD" >> $GITHUB_ENV
-        cd  targets/*/*
-        echo "UPLOAD_PATH=$PWD" >> $GITHUB_ENV
-        echo "::set-output name=status::success"
-        
-    - name: Compressed kernel packages
-      uses: thedoctor0/zip-release@master
-      if: steps.environment.outputs.status == 'success' && steps.compile.outputs.status == 'success' && !cancelled()
-      with:
-        type: tar
-        path: packages/
-        directory: ${{ env.UPLOAD_PATH }}/
-        filename: ${{ env.UPLOAD_PATH }}/OpenWrt_firmware_kernel_packages${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}.tar.gz
-        
-    - name: Compressed firmware packages
-      uses: thedoctor0/zip-release@master
-      if: steps.environment.outputs.status == 'success' && steps.compile.outputs.status == 'success' && !cancelled()
-      with:
-        type: tar
-        path: packages/
-        directory: ${{ env.WORKSPACE_DIR }}/
-        filename: ${{ env.UPLOAD_PATH }}/OpenWrt_firmware_packages${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}.tar.gz
-        
-    - name: Organize files
-      id: organize
-      if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
-      run: |
-        cd openwrt/bin/targets/*/*
-        rm -rf packages
-        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-        echo "::set-output name=status::success"
         
     - name: Upload firmware directory
       uses: actions/upload-artifact@main
@@ -177,7 +133,7 @@ jobs:
         echo "::set-output name=status::success"
         
     - name: Upload firmware to release
-      if: steps.organizer.outputs.status == 'success' && env.RELEASE == 'true' && !cancelled()
+      if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success' && !cancelled()
       uses: softprops/action-gh-release@v1
       env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
