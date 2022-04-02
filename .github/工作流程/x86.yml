@@ -165,7 +165,7 @@ jobs:
         path: ${{ env.FIRMWARE }}
          
     - name: Upload firmware to release
-      if: env.UPLOAD_RELEASE == 'true' && steps.compile.outputs.status == 'success' && !cancelled()
+      if: steps.organizer.outputs.status == 'success' && env.RELEASE == 'true' && !cancelled()
       uses: softprops/action-gh-release@v1
       env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
