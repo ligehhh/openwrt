@@ -198,7 +198,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
-        name: ${{ env.RELEASE_NAME }}  Nian| ${{ matrix.target }}-精简x86
+        name: ${{ env.RELEASE_NAME }}  Nian| ${{ matrix.target }}-日用版x86
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
