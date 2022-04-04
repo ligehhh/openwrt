@@ -198,7 +198,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
-        name: ${{ env.RELEASE_NAME }}  ❤️ | ${{ matrix.target }}-x86 自动编译
+        name: ${{ env.RELEASE_NAME }}  ❤️ | ${{ matrix.target }}-精简x86
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
