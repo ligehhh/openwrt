@@ -106,8 +106,8 @@ jobs:
         make -j$(nproc) || make -j1 || make -j1 V=s
         echo "::set-output name=status::success"
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
-        [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
-        echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+        echo "RELEASE_NAME=$(TZ=UTC-8 date +'%Y年%m月%d号-%H点%M分')" >> $GITHUB_ENV
+        echo "RELEASE_TAG=$(TZ=UTC-8 date +'%Y%m%d-%H%M')" >> $GITHUB_ENV
         
     - name: Check space usage
       if: (!cancelled())
@@ -198,6 +198,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
       with:
+        name: ${{ env.RELEASE_NAME }}  Nian| ${{ matrix.target }}-x86wifi全驱动版
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
