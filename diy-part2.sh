@@ -23,3 +23,4 @@ sed -i '/<tr><td width="33%"><%:Compiler author/a <tr><td width="33%"><%:Firmwar
 sed -i '8a\msgid "Firmware Update"' feeds/luci/modules/luci-base/po/zh-cn/base.po #添加汉化
 sed -i '9a\msgstr "固件更新"' feeds/luci/modules/luci-base/po/zh-cn/base.po #添加汉化
 sed -i '10a \\' feeds/luci/modules/luci-base/po/zh-cn/base.po #添加汉化
+sed -i 's/PKG_HASH.*/PKG_HASH:=skip/' feeds/packages/utils/containerd/Makefile #修复依赖
