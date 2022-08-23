@@ -31,3 +31,5 @@ sed -i '/<tr><td width="33%"><%:Firmware Update/a <tr><td width="10%"><%:Urban w
 sed -i '14a\msgid "Urban weather"' feeds/luci/modules/luci-base/po/zh-cn/base.po #添加汉化
 sed -i '15a\msgstr "最近天气"' feeds/luci/modules/luci-base/po/zh-cn/base.po #添加汉化
 sed -i '16a \\' feeds/luci/modules/luci-base/po/zh-cn/base.po #添加汉化
+rm -rf  package/base-files/files/etc/banner #删除log信息
+cp -r banner package/base-files/files/etc #添加iog信息
