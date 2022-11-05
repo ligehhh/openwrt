@@ -16,3 +16,4 @@
 # Add a feed source
 echo 'src-git kenzok https://github.com/kenzok8/openwrt-packages' >>feeds.conf.default
 echo 'src-git small https://github.com/kenzok8/small' >>feeds.conf.default
+git clone https://github.com/lzq98/luci-app-netmap package/luci-app-netmap #添加网络拓扑插件
