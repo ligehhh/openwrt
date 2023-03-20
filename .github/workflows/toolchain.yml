@@ -94,7 +94,7 @@ jobs:
       run: |
         cd openwrt
         echo -e "$(nproc) thread compile"
-        make tools/compile
+        make toolchain/compile -j99
         echo "::set-output name=status::success"
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
         echo "RELEASE_NAME=$(TZ=UTC-8 date +'%Y年%m月%d号-%H点%M分')" >> $GITHUB_ENV
@@ -104,74 +104,14 @@ jobs:
       if: (!cancelled())
       run: df -hT
 
-    - name: Upload bin directory
-      uses: actions/upload-artifact@main
-      if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
-      with:
-        name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
-        path: openwrt/bin
-        
-    - name: Get environment path
-      id: environment
-      if: env.UPLOAD_BIN_DIR == 'true' && !cancelled()
-      run: |
-        cd openwrt/bin/
-        echo "WORKSPACE_DIR=$PWD" >> $GITHUB_ENV
-        cd  targets/*/*
-        echo "UPLOAD_PATH=$PWD" >> $GITHUB_ENV
-        echo "::set-output name=status::success"
-        
-    - name: Compressed kernel packages
+    - name: Upload toolchain directory
       uses: thedoctor0/zip-release@master
       if: steps.environment.outputs.status == 'success' && steps.compile.outputs.status == 'success' && !cancelled()
       with:
         type: tar
-        path: packages/
+        path: build_dir/
         directory: ${{ env.UPLOAD_PATH }}/
-        filename: ${{ env.UPLOAD_PATH }}/OpenWrt_firmware_kernel_packages${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}.tar.gz
-        
-    - name: Compressed firmware packages
-      uses: thedoctor0/zip-release@master
-      if: steps.environment.outputs.status == 'success' && steps.compile.outputs.status == 'success' && !cancelled()
-      with:
-        type: tar
-        path: packages/
-        directory: ${{ env.WORKSPACE_DIR }}/
-        filename: ${{ env.UPLOAD_PATH }}/OpenWrt_firmware_packages${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}.tar.gz
-        
-    - name: Organize files
-      id: organize
-      if: env.UPLOAD_FIRMWARE == 'true' && !cancelled()
-      run: |
-        cd openwrt/bin/targets/*/*
-        rm -rf packages
-        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-        echo "::set-output name=status::success"
-        
-    - name: Upload firmware directory
-      uses: actions/upload-artifact@main
-      if: steps.organize.outputs.status == 'success' && !cancelled()
-      with:
-        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
-        path: ${{ env.FIRMWARE }}
-
-    - name: Upload firmware to cowtransfer
-      id: cowtransfer
-      if: steps.organize.outputs.status == 'success' && env.UPLOAD_COWTRANSFER == 'true' && !cancelled()
-      run: |
-        curl -fsSL git.io/file-transfer | sh
-        ./transfer cow --block 2621440 -s -p 64 --no-progress ${FIRMWARE} 2>&1 | tee cowtransfer.log
-        echo "::warning file=cowtransfer.com::$(cat cowtransfer.log | grep https)"
-        echo "::set-output name=url::$(cat cowtransfer.log | grep https | cut -f3 -d" ")"
-        
-    - name: Upload firmware to WeTransfer
-      id: wetransfer
-      if: steps.organize.outputs.status == 'success' && env.UPLOAD_WETRANSFER == 'true' && !cancelled()
-      run: |
-        curl -fsSL git.io/file-transfer | sh
-        ./transfer wet -s -p 16 --no-progress ${FIRMWARE} 2>&1 | tee wetransfer.log
-        echo "::warning file=wetransfer.com::$(cat wetransfer.log | grep https)"
-        echo "::set-output name=url::$(cat wetransfer.log | grep https | cut -f3 -d" ")"
+        filename: ${{ env.UPLOAD_PATH }}.tar.gz
         
     - name: Generate release tag
       id: tag
@@ -193,18 +133,4 @@ jobs:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
-
-    - name: Delete workflow runs
-      uses: GitRML/delete-workflow-runs@main
-      with:
-        retain_days: 10
-        keep_minimum_runs: 10
-
-    - name: Remove old Releases
-      uses: dev-drprasad/delete-older-releases@v0.1.0
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-      with:
-        keep_latest: 10
-        delete_tags: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
