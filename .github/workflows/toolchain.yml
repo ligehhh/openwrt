@@ -111,7 +111,7 @@ jobs:
         type: tar
         path: build_dir/
         directory: ${{ env.UPLOAD_PATH }}/
-        filename: ${{ env.UPLOAD_PATH }}.tar.gz
+        filename: ${{ env.UPLOAD_PATH }}/toolchain-x86_64_gcc-${{ env.UPLOAD_PATH }}_musl.tar.gz
         
     - name: Generate release tag
       id: tag
